@@ -51,8 +51,25 @@ int main() {
 	printf("Waiting for a client to connect...\n");
 	client_addr_len = sizeof(client_addr);
 	
-	accept(server_fd, (struct sockaddr *) &client_addr, &client_addr_len);
+	// connecting to client
+	int client_socket;
+	client_socket = accept(server_fd, (struct sockaddr *) &client_addr, &client_addr_len);
+	if (client_socket == -1) {
+		printf("accept failed: %s\n", strerror(errno));
+		close(server_fd);
+		return 1;
+	}
 	printf("Client connected\n");
+
+	// replying to client
+	const char *reply = "+PONG\r\n";
+	if (send(client_socket, reply, strlen(reply), 0) == -1){
+		printf("replying to client failed: %s\n", strerror(errno));
+		close(client_socket);
+		close(server_fd);
+		return 1;
+	}
+	close(client_socket);
 	
 	close(server_fd);
 
