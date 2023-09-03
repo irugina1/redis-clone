@@ -6,6 +6,8 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+#include <pthread.h>
+
 
 void *handle_client(void *args){
 	int client_socket = *( (int* )args);  // cast pointer and then dereference
@@ -15,8 +17,8 @@ void *handle_client(void *args){
 		// get request from client
 		ssize_t bytes_received = recv(client_socket, buffer, sizeof(buffer), 0);
 		if (bytes_received <= 0) {
-			printf("client disconnected");
-			return NULL;
+			printf("client disconnected: %s\n", strerror(errno));
+			break;
 		}
 		buffer[bytes_received] = '\0'; // null-terminate
 		printf("received mesage: %s\n", buffer);
@@ -24,11 +26,12 @@ void *handle_client(void *args){
 		const char *reply = "+PONG\r\n";
 		if (send(client_socket, reply, strlen(reply), 0) == -1){
 			printf("replying to client failed: %s\n", strerror(errno));
-			close(client_socket);
-			return NULL;
+			break;
 		}
     }
 	close(client_socket);
+	free(args);
+	return NULL;
 }
 
 
@@ -75,20 +78,25 @@ int main() {
 	
 	printf("Waiting for a client to connect...\n");
 	client_addr_len = sizeof(client_addr);
-	
-	// connecting to client
-	int client_socket;
-	client_socket = accept(server_fd, (struct sockaddr *) &client_addr, &client_addr_len);
-	if (client_socket == -1) {
-		printf("accept failed: %s\n", strerror(errno));
-		close(server_fd);
-		return 1;
-	}
-	printf("Client connected\n");
-    handle_client(&client_socket);
 
+    while (1){
+		int *client_socket_ptr = malloc(sizeof(int));
+		*client_socket_ptr = accept(server_fd, (struct sockaddr *) &client_addr, &client_addr_len);
+		if (*client_socket_ptr == -1) {
+			printf("accept failed: %s\n", strerror(errno));
+			free(client_socket_ptr);
+			continue;
+		}
+		printf("Client connected\n");
+
+		pthread_t thread_id;
+		if (pthread_create(&thread_id, NULL, handle_client, client_socket_ptr) != 0){
+			printf("failed to create thread %s\n", strerror(errno));
+			free(client_socket_ptr);
+		}
+		pthread_detach(thread_id);
+	}
 
 	close(server_fd);
-
 	return 0;
 }
