@@ -7,6 +7,31 @@
 #include <errno.h>
 #include <unistd.h>
 
+void *handle_client(void *args){
+	int client_socket = *( (int* )args);  // cast pointer and then dereference
+	// handle the client
+	char buffer[1024];
+	while(1){
+		// get request from client
+		ssize_t bytes_received = recv(client_socket, buffer, sizeof(buffer), 0);
+		if (bytes_received <= 0) {
+			printf("client disconnected");
+			return NULL;
+		}
+		buffer[bytes_received] = '\0'; // null-terminate
+		printf("received mesage: %s\n", buffer);
+		// reply to client
+		const char *reply = "+PONG\r\n";
+		if (send(client_socket, reply, strlen(reply), 0) == -1){
+			printf("replying to client failed: %s\n", strerror(errno));
+			close(client_socket);
+			return NULL;
+		}
+    }
+	close(client_socket);
+}
+
+
 int main() {
 	// Disable output buffering
 	setbuf(stdout, NULL);
@@ -60,29 +85,9 @@ int main() {
 		return 1;
 	}
 	printf("Client connected\n");
+    handle_client(&client_socket);
 
-	// replying to client
-    char buffer[1024];
-    while(1){
-        // get request from client
-        ssize_t bytes_received = recv(client_socket, buffer, sizeof(buffer), 0);
-        if (bytes_received <= 0) {
-            printf("client disconnected");
-            return 1;
-        }
-        buffer[bytes_received] = '\0'; // null-terminate
-        printf("received mesage: %s\n", buffer);
-        // reply to client
-		const char *reply = "+PONG\r\n";
-		if (send(client_socket, reply, strlen(reply), 0) == -1){
-			printf("replying to client failed: %s\n", strerror(errno));
-			close(client_socket);
-			close(server_fd);
-			return 1;
-		}
-    }
 
-	close(client_socket);
 	close(server_fd);
 
 	return 0;
