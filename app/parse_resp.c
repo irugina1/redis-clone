@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef enum {
 	RESP_STRING,
@@ -22,11 +23,21 @@ typedef struct resp_object {
 } resp_object_t;
 
 resp_object_t* parse_resp_string(const char **input){
-	return NULL;
+	char *end = strstr(*input, "\r\n");
+	resp_object_t *obj = malloc(sizeof(resp_object_t));
+	obj->type = RESP_STRING;
+	obj->value.string = strndup(*input, end-*input);
+	*input = end + 2;
+	return obj;
 }
 
 resp_object_t* parse_resp_integer(const char **input){
-	return NULL;
+	char *end = strstr(*input, "\r\n");
+	resp_object_t *obj = malloc(sizeof(resp_object_t));
+	obj->type = RESP_INTEGER;
+	obj->value.integer = atoi(strndup(*input, end-*input));
+	*input = end + 2;
+	return obj;
 }
 
 resp_object_t* parse_resp_bulk_string(const char **input){
@@ -60,8 +71,15 @@ resp_object_t* parse_resp(const char **input){
 }
 
 int main(){
+	// test string
 	const char *message = "+PONG\r\n";
-    printf("message = %s", message);
-    const char ** current_index = &(message);
-    resp_object_t * obj = parse_resp(current_index);
+	printf("message = %s", message);
+	const char ** current_index = &(message);
+	resp_object_t * obj = parse_resp(current_index);
+	printf("message string was: %s\n", obj->value.string);
+	// test integer
+	const char *message2 = ":10\r\n";
+	printf("message = %s", message2);
+	resp_object_t * obj2 = parse_resp(&message2);
+	printf("message string was: %d\n", obj2->value.integer);
 }
