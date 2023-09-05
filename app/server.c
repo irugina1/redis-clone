@@ -36,11 +36,13 @@ void *handle_client(void *args){
 			// must be an echo command
 			printf("array has %zu elems\n", obj->value.array.len);
 			char* echo_message = obj->value.array.elements[1]->value.string;
-			printf("echo message = %s", echo_message);
+			printf("echo message = %s\n", echo_message);
 			char* reply = malloc(strlen(echo_message) + 2);
+			printf("reply = %s\n", reply);
 			sprintf(reply, "+%s", echo_message);
+			printf("reply = %s\n", reply);
 		}
-		printf("reply = %s", reply);
+		printf("reply = %s\n", reply);
 		if (send(client_socket, reply, strlen(reply), 0) == -1){
 			printf("replying to client failed: %s\n", strerror(errno));
 			break;
