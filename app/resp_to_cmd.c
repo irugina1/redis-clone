@@ -11,9 +11,6 @@ cmd_object_t* resp_to_command(resp_object_t* obj ){
 		cmd_name[i] = tolower(cmd_name[i]);
 	}
 	// set cmd type
-	if (strcmp(cmd_name, "ping") == 0) {
-		cmd->type = CMD_PING;
-	}
 	if (strcmp(cmd_name, "echo") == 0) {
 		cmd->type = CMD_ECHO;
 	}
@@ -24,7 +21,8 @@ cmd_object_t* resp_to_command(resp_object_t* obj ){
 		cmd->type = CMD_GET;
 	}
 	else{
-		return NULL;
+		cmd->type = CMD_PING;
+		return cmd;
 	}
 	// set number of args
 	int num_args = obj->value.array.len;
