@@ -1,31 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "parse_resp.h"
 
-typedef enum {
-	RESP_STRING,
-	RESP_ERROR,
-	RESP_INTEGER,
-	RESP_BULK_STRING,
-	RESP_ARRAY,
-} resp_type_t;
-
-typedef struct resp_object {
-	resp_type_t type;
-	union {
-		int integer;
-		char* string;
-		struct {
-			size_t len;
-			struct resp_object **elements;
-		} array;
-	} value;
-} resp_object_t;
-
-resp_object_t* parse_resp(const char **input);
-
-
-resp_object_t* parse_resp_string(const char **input){
+static resp_object_t* parse_resp_string(const char **input){
 	char *end = strstr(*input, "\r\n");
 	resp_object_t *obj = malloc(sizeof(resp_object_t));
 	obj->type = RESP_STRING;
@@ -34,7 +9,7 @@ resp_object_t* parse_resp_string(const char **input){
 	return obj;
 }
 
-resp_object_t* parse_resp_integer(const char **input){
+static resp_object_t* parse_resp_integer(const char **input){
 	char *end = strstr(*input, "\r\n");
 	resp_object_t *obj = malloc(sizeof(resp_object_t));
 	obj->type = RESP_INTEGER;
@@ -43,7 +18,7 @@ resp_object_t* parse_resp_integer(const char **input){
 	return obj;
 }
 
-resp_object_t* parse_resp_bulk_string(const char **input){
+static resp_object_t* parse_resp_bulk_string(const char **input){
 	// setup
 	resp_object_t *obj = malloc(sizeof(resp_object_t));
 	obj->type = RESP_BULK_STRING;
@@ -57,7 +32,7 @@ resp_object_t* parse_resp_bulk_string(const char **input){
 	return obj;
 }
 
-resp_object_t* parse_resp_array(const char **input){
+static resp_object_t* parse_resp_array(const char **input){
 	// setup
 	resp_object_t *obj = malloc(sizeof(resp_object_t));
 	obj->type = RESP_ARRAY;
