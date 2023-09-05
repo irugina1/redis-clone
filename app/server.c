@@ -31,7 +31,6 @@ void *handle_client(void *args){
 		printf("\n");
 		// parse the request
 		// TODO free memory after i'm done with obj below
-		// TODO create a struct for redis command -> figure out how to go from resp object to a redis command
 		resp_object_t * obj = parse_resp(&ptr);
 		cmd_object_t * cmd = resp_to_command(obj);
 		if (cmd->type == CMD_PING) {
@@ -102,7 +101,6 @@ int main() {
 		return 1;
 	}
 	
-	printf("Waiting for a client to connect...\n");
 	client_addr_len = sizeof(client_addr);
 
     while (1){
@@ -113,7 +111,6 @@ int main() {
 			free(client_socket_ptr);
 			continue;
 		}
-		printf("Client connected\n");
 
 		pthread_t thread_id;
 		if (pthread_create(&thread_id, NULL, handle_client, client_socket_ptr) != 0){
