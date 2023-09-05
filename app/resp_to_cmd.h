@@ -3,8 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "parse_resp.h"
 
 typedef enum {
+	CMD_PING,
 	CMD_ECHO,
 	CMD_SET,
 	CMD_GET
@@ -16,6 +18,6 @@ typedef struct cmd_object {
 	char ** args;
 } cmd_object_t;
 
-cmd_object_t* resp_to_command(const char **input);
+cmd_object_t* resp_to_command(resp_object_t* obj);
 
 #endif // RESP_TO_COMMAND_H

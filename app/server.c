@@ -10,6 +10,7 @@
 
 
 #include "parse_resp.h"
+#include "resp_to_cmd.h"
 
 
 void *handle_client(void *args){
@@ -32,10 +33,16 @@ void *handle_client(void *args){
 		// TODO free memory after i'm done with obj below
 		// TODO create a struct for redis command -> figure out how to go from resp object to a redis command
 		resp_object_t * obj = parse_resp(&ptr);
-		// reply to client
-		if (obj->type == RESP_ARRAY && obj->value.array.len > 1){
-			// must be an echo command
-			char* echo_message = obj->value.array.elements[1]->value.string;
+		cmd_object_t * cmd = resp_to_command(obj);
+		if (cmd->type == CMD_PING) {
+			char *reply = "+PONG\r\n";
+			if (send(client_socket, reply, strlen(reply), 0) == -1){
+				printf("replying to client failed: %s\n", strerror(errno));
+				break;
+			}
+		}
+		if (cmd->type == CMD_ECHO) {
+			char* echo_message = cmd->args[1];
 			char* reply = malloc(strlen(echo_message) + 2);
 			sprintf(reply, "+%s", echo_message);
 			if (send(client_socket, reply, strlen(reply), 0) == -1){
@@ -44,11 +51,7 @@ void *handle_client(void *args){
 			}
 		}
 		else{
-			char *reply = "+PONG\r\n";
-			if (send(client_socket, reply, strlen(reply), 0) == -1){
-				printf("replying to client failed: %s\n", strerror(errno));
-				break;
-			}
+
 		}
     }
 	close(client_socket);
