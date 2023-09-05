@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 typedef enum {
 	RESP_STRING,
@@ -26,5 +27,6 @@ typedef struct resp_object {
 } resp_object_t;
 
 resp_object_t* parse_resp(const char **input);
+void print_raw(const char *s);
 
 #endif // RESP_PARSER_H

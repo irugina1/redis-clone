@@ -8,7 +8,9 @@
 #include <unistd.h>
 #include <pthread.h>
 
+
 #include "parse_resp.h"
+
 
 void *handle_client(void *args){
 	int client_socket = *( (int* )args);  // cast pointer and then dereference
@@ -21,16 +23,18 @@ void *handle_client(void *args){
 			printf("client disconnected: %s\n", strerror(errno));
 			break;
 		}
+		printf("\nreceived %zu bytes\n", bytes_received);
 		buffer[bytes_received] = '\0'; // null-terminate
-		printf("received mesage: %s\n", buffer);
-		// parse the request
 		const char *ptr = buffer;
+		print_raw(ptr);
+		printf("\n");
+		// parse the request
 		resp_object_t * obj = parse_resp(&ptr);
-		printf("request has string %s", obj->value.string);
 		// reply to client
 		char *reply = "+PONG\r\n";
-		if (obj->type == RESP_ARRAY){
+		if (obj->type == RESP_ARRAY && obj->value.array.len > 1){
 			// must be an echo command
+			printf("array has %zu elems\n", obj->value.array.len);
 			char* echo_message = obj->value.array.elements[1]->value.string;
 			char* reply = malloc(strlen(echo_message) + 2);
 			sprintf(reply, "+%s", echo_message);
@@ -54,7 +58,8 @@ int main() {
 	printf("Logs from your program will appear here!\n");
 
 	// Uncomment this block to pass the first stage
-	int server_fd, client_addr_len;
+	int server_fd;
+	socklen_t client_addr_len;
 	struct sockaddr_in client_addr;
 	
 	server_fd = socket(AF_INET, SOCK_STREAM, 0);
