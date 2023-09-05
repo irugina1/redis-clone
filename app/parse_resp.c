@@ -72,6 +72,7 @@ resp_object_t* parse_resp(const char **input){
 	}
 }
 
+/*
 int main(){
 	// test string
 	const char *message = "+PONG\r\n";
@@ -91,3 +92,4 @@ int main(){
 	printf("first element in array had string %s\n", obj3->value.array.elements[0]->value.string);
 	printf("second element in array had string %s\n", obj3->value.array.elements[1]->value.string);
 }
+*/
