@@ -24,16 +24,18 @@ void *handle_client(void *args){
 		buffer[bytes_received] = '\0'; // null-terminate
 		printf("received mesage: %s\n", buffer);
 		// parse the request
-		const char *ptr = buffer;
-		resp_object_t * obj3 = parse_resp(&ptr);
+		// const char *ptr = buffer;
+		// resp_object_t * obj3 = parse_resp(&ptr);
 		// reply to client
 		char *reply = "+PONG\r\n";
+		/*
 		if (obj3->type == RESP_ARRAY){
 			// must be an echo command
 			char* echo_message = obj3->value.array.elements[1]->value.string;
 			char* reply = malloc(strlen(echo_message) + 2);
 			sprintf(reply, "+%s", echo_message);
 		}
+		*/
 		if (send(client_socket, reply, strlen(reply), 0) == -1){
 			printf("replying to client failed: %s\n", strerror(errno));
 			break;
