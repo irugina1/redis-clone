@@ -29,6 +29,8 @@ void *handle_client(void *args){
 		print_raw(ptr);
 		printf("\n");
 		// parse the request
+		// TODO free memory after i'm done with obj below
+		// TODO create a struct for redis command -> figure out how to go from resp object to a redis command
 		resp_object_t * obj = parse_resp(&ptr);
 		// reply to client
 		if (obj->type == RESP_ARRAY && obj->value.array.len > 1){
