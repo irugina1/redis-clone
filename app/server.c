@@ -33,27 +33,26 @@ void *handle_client(void *args){
 		// TODO free memory after i'm done with obj below
 		resp_object_t * obj = parse_resp(&ptr);
 		cmd_object_t * cmd = resp_to_command(obj);
+		char * reply;
 		if (cmd->type == CMD_PING) {
-			char *reply = "+PONG\r\n";
-			if (send(client_socket, reply, strlen(reply), 0) == -1){
-				printf("replying to client failed: %s\n", strerror(errno));
-				break;
-			}
+			reply = "+PONG\r\n";
+
 		}
 		if (cmd->type == CMD_ECHO) {
 			char* echo_message = cmd->args[1];
-			char* reply = malloc(strlen(echo_message) + 2);
+			reply = malloc(strlen(echo_message) + 2);
 			sprintf(reply, "+%s", echo_message);
-			if (send(client_socket, reply, strlen(reply), 0) == -1){
-				printf("replying to client failed: %s\n", strerror(errno));
-				break;
-			}
+
 		}
 		if (cmd->type == CMD_SET) {
 		}
 		if (cmd->type == CMD_GET) {
 		}
 		else{
+		}
+		if (send(client_socket, reply, strlen(reply), 0) == -1){
+			printf("replying to client failed: %s\n", strerror(errno));
+			break;
 		}
     }
 	close(client_socket);
@@ -89,9 +88,9 @@ int main() {
 	}
 	
 	struct sockaddr_in serv_addr = { .sin_family = AF_INET ,
-									 .sin_port = htons(6379),
-									 .sin_addr = { htonl(INADDR_ANY) },
-									};
+					 .sin_port = htons(6379),
+					 .sin_addr = { htonl(INADDR_ANY) },
+					};
 	
 	if (bind(server_fd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) != 0) {
 		printf("Bind failed: %s \n", strerror(errno));
@@ -106,7 +105,12 @@ int main() {
 	
 	client_addr_len = sizeof(client_addr);
 
-    while (1){
+	// hashtable for in-memory key-value
+	HashTable *ht = (HashTable*) malloc(sizeof(HashTable));
+	initializeHashTable(ht);
+	// TODO pass this to handle_client
+
+	while (1){
 		int *client_socket_ptr = malloc(sizeof(int));
 		*client_socket_ptr = accept(server_fd, (struct sockaddr *) &client_addr, &client_addr_len);
 		if (*client_socket_ptr == -1) {
