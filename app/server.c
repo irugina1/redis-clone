@@ -49,8 +49,11 @@ void *handle_client(void *args){
 				break;
 			}
 		}
+		if (cmt->type == CMD_SET) {
+		}
+		if (cmt->type == CMD_GET) {
+		}
 		else{
-
 		}
     }
 	close(client_socket);

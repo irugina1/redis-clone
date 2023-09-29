@@ -8,4 +8,5 @@
 set -e
 tmpFile=$(mktemp)
 gcc app/*.c -o $tmpFile
+# do i need gcc app/*.c -o $tmpFile -lpthread ?
 exec $tmpFile

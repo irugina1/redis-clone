@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <phtread.h>
 
 #define TABLE_SIZE 100
 
@@ -15,6 +16,7 @@ typedef struct KeyValuePair {
 
 typedef struct {
     KeyValuePair *buckets[TABLE_SIZE];
+    pthread_mutex_t mutex; // lock
 } HashTable;
 
 // Function prototypes
