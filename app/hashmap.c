@@ -1,18 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
-#define TABLE_SIZE 100
-
-typedef struct KeyValuePair {
-    char key[100];
-    int value;
-    struct KeyValuePair *next;
-} KeyValuePair;
-
-typedef struct {
-    KeyValuePair *buckets[TABLE_SIZE];
-} HashTable;
+#include "hash_table.h"
 
 unsigned int hash(const char *key) {
     unsigned int hash = 0;
@@ -56,21 +42,3 @@ int get(HashTable *ht, const char *key) {
     }
     return -1;  // Sentinel value indicating key was not found
 }
-
-int main() {
-    HashTable ht = {0};  // Initialize all pointers to NULL
-
-    insert(&ht, "one", 1);
-    insert(&ht, "two", 2);
-    insert(&ht, "three", 3);
-
-    printf("one: %d\n", get(&ht, "one"));
-    printf("two: %d\n", get(&ht, "two"));
-    printf("four: %d\n", get(&ht, "four")); // Will print -1 as "four" isn't in our hashtable
-
-    // Don't forget to free memory before exiting!
-    // ... 
-
-    return 0;
-}
-

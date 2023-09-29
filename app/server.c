@@ -11,7 +11,7 @@
 
 #include "parse_resp.h"
 #include "resp_to_cmd.h"
-
+#include "hashmap.h"
 
 void *handle_client(void *args){
 	int client_socket = *( (int* )args);  // cast pointer and then dereference
