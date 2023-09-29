@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <phtread.h>
+#include <pthread.h>
 
 #define TABLE_SIZE 100
 
