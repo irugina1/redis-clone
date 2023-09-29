@@ -13,8 +13,15 @@
 #include "resp_to_cmd.h"
 #include "hashmap.h"
 
+typedef struct {
+	int client_socket;
+	HashTable *ht;
+} client_data_t;
+
 void *handle_client(void *args){
-	int client_socket = *( (int* )args);  // cast pointer and then dereference
+	client_data_t *data = ( (client_data_t* )args);  // cast pointer and then dereference
+	int client_socket = data->client_socket;
+	// HashTable * ht = data->ht; 
 	// handle the client
 	char buffer[1024];
 	while(1){
@@ -108,21 +115,20 @@ int main() {
 	// hashtable for in-memory key-value
 	HashTable *ht = (HashTable*) malloc(sizeof(HashTable));
 	initializeHashTable(ht);
-	// TODO pass this to handle_client
 
 	while (1){
-		int *client_socket_ptr = malloc(sizeof(int));
-		*client_socket_ptr = accept(server_fd, (struct sockaddr *) &client_addr, &client_addr_len);
-		if (*client_socket_ptr == -1) {
+		client_data_t *client_data = malloc(sizeof(client_data_t));
+		client_data->client_socket = accept(server_fd, (struct sockaddr *) &client_addr, &client_addr_len);
+		if (client_data->client_socket == -1) {
 			printf("accept failed: %s\n", strerror(errno));
-			free(client_socket_ptr);
+			free(client_data);
 			continue;
 		}
-
+		client_data->ht = ht;
 		pthread_t thread_id;
-		if (pthread_create(&thread_id, NULL, handle_client, client_socket_ptr) != 0){
+		if (pthread_create(&thread_id, NULL, handle_client, client_data) != 0){
 			printf("failed to create thread %s\n", strerror(errno));
-			free(client_socket_ptr);
+			free(client_data);
 		}
 		pthread_detach(thread_id);
 	}
