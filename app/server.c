@@ -19,9 +19,9 @@ typedef struct {
 } client_data_t;
 
 void *handle_client(void *args){
-	client_data_t *data = ( (client_data_t* )args);  // cast pointer and then dereference
+	client_data_t *data = (client_data_t* )args;  // cast pointer
 	int client_socket = data->client_socket;
-	// HashTable * ht = data->ht; 
+	HashTable * ht = data->ht; 
 	// handle the client
 	char buffer[1024];
 	while(1){
@@ -52,8 +52,12 @@ void *handle_client(void *args){
 
 		}
 		if (cmd->type == CMD_SET) {
+			insert(ht, cmd->args[1], atoi(cmd->args[2]));
+			reply = "OK";
 		}
 		if (cmd->type == CMD_GET) {
+			int val = get(ht, cmd->args[1]);
+			sprintf(reply, "%d", val);
 		}
 		else{
 		}
@@ -61,7 +65,7 @@ void *handle_client(void *args){
 			printf("replying to client failed: %s\n", strerror(errno));
 			break;
 		}
-    }
+	}
 	close(client_socket);
 	free(args);
 	return NULL;

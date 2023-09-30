@@ -23,5 +23,7 @@ typedef struct {
 unsigned int hash(const char *key);
 void insert(HashTable *ht, const char *key, int value);
 int get(HashTable *ht, const char *key);
+void initializeHashTable(HashTable *ht);
+void freeHashTable(HashTable *ht);
 
 #endif // HASH_TABLE_H
