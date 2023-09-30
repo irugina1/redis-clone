@@ -53,11 +53,11 @@ void *handle_client(void *args){
 		}
 		if (cmd->type == CMD_SET) {
 			insert(ht, cmd->args[1], atoi(cmd->args[2]));
-			reply = "OK";
+			reply = "+OK";
 		}
 		if (cmd->type == CMD_GET) {
 			int val = get(ht, cmd->args[1]);
-			sprintf(reply, "%d", val);
+			sprintf(reply, ":%d", val);
 		}
 		else{
 		}
