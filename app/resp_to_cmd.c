@@ -31,6 +31,7 @@ cmd_object_t* resp_to_command(resp_object_t* obj ){
 	cmd->args = malloc(sizeof(char *) * num_args);
 	
 	for (int i =0; i < num_args; i++){
+		cmd->args[i] = malloc(strlen(obj->value.array.elements[i]->value.string) + 1);
 		strcpy(cmd->args[i], obj->value.array.elements[i]->value.string);
 	}
 	
