@@ -28,19 +28,19 @@ void *handle_client(void *args){
 		// get request from client
 		ssize_t bytes_received = recv(client_socket, buffer, sizeof(buffer), 0);
 		if (bytes_received <= 0) {
-			printf("client disconnected: %s\n", strerror(errno));
+			// printf("client disconnected: %s\n", strerror(errno));
 			break;
 		}
-		printf("\nreceived %zu bytes\n", bytes_received);
+		// printf("\nreceived %zu bytes\n", bytes_received);
 		buffer[bytes_received] = '\0'; // null-terminate
 		const char *ptr = buffer;
-		print_raw(ptr);
-		printf("\n");
+		// print_raw(ptr);
+		// printf("\n");
 		// parse the request
 		// TODO free memory after i'm done with obj below
 		resp_object_t * obj = parse_resp(&ptr);
 		cmd_object_t * cmd = resp_to_command(obj);
-		char * reply;
+		char *reply = (char *)malloc(100 * sizeof(char));
 		if (cmd->type == CMD_PING) {
 			reply = "+PONG\r\n";
 
@@ -52,7 +52,9 @@ void *handle_client(void *args){
 
 		}
 		if (cmd->type == CMD_SET) {
+
 			insert(ht, cmd->args[1], atoi(cmd->args[2]));
+
 			reply = "+OK";
 		}
 		if (cmd->type == CMD_GET) {
