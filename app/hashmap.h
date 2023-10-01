@@ -10,7 +10,7 @@
 
 typedef struct KeyValuePair {
     char key[100];
-    int value;
+    char value[100];
     struct KeyValuePair *next;
 } KeyValuePair;
 
@@ -21,8 +21,8 @@ typedef struct {
 
 // Function prototypes
 unsigned int hash(const char *key);
-void insert(HashTable *ht, const char *key, int value);
-int get(HashTable *ht, const char *key);
+void insert(HashTable *ht, const char *key, const char *value);
+char *get(HashTable *ht, const char *key);
 void initializeHashTable(HashTable *ht);
 void freeHashTable(HashTable *ht);
 

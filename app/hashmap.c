@@ -8,12 +8,12 @@ unsigned int hash(const char *key) {
     return hash % TABLE_SIZE;
 }
 
-void insert(HashTable *ht, const char *key, int value) {
+void insert(HashTable *ht, const char *key, const char* value) {
     pthread_mutex_lock(&ht->mutex);  // Lock the mutex
     unsigned int idx = hash(key);
     KeyValuePair *new_kv = malloc(sizeof(KeyValuePair));
     strcpy(new_kv->key, key);
-    new_kv->value = value;
+    strcpy(new_kv->value, value);
     new_kv->next = NULL;
 
     if (!ht->buckets[idx]) {
@@ -22,7 +22,7 @@ void insert(HashTable *ht, const char *key, int value) {
         KeyValuePair *current = ht->buckets[idx];
         while (current->next) {
             if (strcmp(current->key, key) == 0) {
-                current->value = value;
+                strcpy(current->value, value);
                 free(new_kv);
                 pthread_mutex_unlock(&ht->mutex);  // Unlock the mutex
                 return;
@@ -34,7 +34,7 @@ void insert(HashTable *ht, const char *key, int value) {
     pthread_mutex_unlock(&ht->mutex);  // Unlock the mutex
 }
 
-int get(HashTable *ht, const char *key) {
+char* get(HashTable *ht, const char *key) {
     pthread_mutex_lock(&ht->mutex);  // Lock the mutex
     unsigned int idx = hash(key);
     KeyValuePair *current = ht->buckets[idx];
@@ -46,7 +46,7 @@ int get(HashTable *ht, const char *key) {
         current = current->next;
     }
     pthread_mutex_unlock(&ht->mutex);  // Unlock the mutex
-    return -1;  // Sentinel value indicating key was not found
+    return NULL;  // Sentinel value indicating key was not found
 }
 
 void initializeHashTable(HashTable *ht) {
