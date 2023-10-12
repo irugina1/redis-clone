@@ -81,10 +81,14 @@ char* get(HashTable *ht, const char *key) {
     while (current) {
         if (strcmp(current->key, key) == 0) {
             struct timeval expiry_tv = current->tv;
-            if (expiry_tv.tv_sec >= 0){ // check if it expired or not
+            if (expiry_tv.tv_sec >= 0){ // check if it expired or no
+                // time right now
                 struct timeval current_tv;
                 gettimeofday(&current_tv, NULL);
-                struct timeval expiry_tv = current->tv;
+                // print the two timestamps
+                printf("expiry time = %ld.%06d\n", expiry_tv.tv_sec, expiry_tv.tv_usec);
+                printf("current time = %ld.%06d\n", current_tv.tv_sec, current_tv.tv_usec);
+                // compare expiry with current time
                 int timeval_comparison = timeval_compare(&expiry_tv ,&current_tv);
                 printf("timeval comparison = %d\n", timeval_comparison);
                 if (timeval_comparison < 0){
