@@ -82,6 +82,7 @@ void *handle_client(void *args){
 			printf("replying to client failed: %s\n", strerror(errno));
 			break;
 		}
+		printf("handled command\n");
 	}
 	close(client_socket);
 	free(args);
@@ -140,6 +141,9 @@ int main() {
 	while (1){
 		client_data_t *client_data = malloc(sizeof(client_data_t));
 		client_data->client_socket = accept(server_fd, (struct sockaddr *) &client_addr, &client_addr_len);
+                struct timeval tv;
+                gettimeofday(&tv, NULL);
+                printf("accepted new request at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
 		if (client_data->client_socket == -1) {
 			printf("accept failed: %s\n", strerror(errno));
 			free(client_data);
