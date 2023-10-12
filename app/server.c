@@ -38,9 +38,20 @@ void *handle_client(void *args){
 		// printf("\n");
 		// parse the request
 		// TODO free memory after i'm done with obj below
+                struct timeval tv;
+                gettimeofday(&tv, NULL);
+                printf("start processing new request at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
 		resp_object_t * obj = parse_resp(&ptr);
-		cmd_object_t * cmd = resp_to_command(obj);
-		char *reply = (char *)malloc(100 * sizeof(char));
+                gettimeofday(&tv, NULL);
+                printf("finished parsing into resp at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
+                printf("parsed request into resp object\n");
+                cmd_object_t * cmd = resp_to_command(obj);
+                gettimeofday(&tv, NULL);
+                printf("finished parsing resp into cmd at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
+                printf("parsed resp object into cmd\n");
+                char *reply = (char *)malloc(100 * sizeof(char));
+                gettimeofday(&tv, NULL);
+                printf("finished malloc at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
 		if (cmd->type == CMD_PING) {
 			reply = "+PONG\r\n";
 
