@@ -80,17 +80,18 @@ char* get(HashTable *ht, const char *key) {
     KeyValuePair *current = ht->buckets[idx];
     while (current) {
         if (strcmp(current->key, key) == 0) {
-	    // check if it expired or not
-            printf("found key in redis hashtable; checking to see if it's not expired\n");
-            struct timeval current_tv;
-            gettimeofday(&current_tv, NULL);
             struct timeval expiry_tv = current->tv;
-            int timeval_comparison = timeval_compare(&expiry_tv ,&current_tv);
-            printf("timeval comparison = %d\n", timeval_comparison);
-            if (timeval_comparison < 0){
-                current = NULL;
-                return NULL;
-            }
+            if (expiry_tv.tv_sec >= 0){ // check if it expired or not
+                struct timeval current_tv;
+                gettimeofday(&current_tv, NULL);
+                struct timeval expiry_tv = current->tv;
+                int timeval_comparison = timeval_compare(&expiry_tv ,&current_tv);
+                printf("timeval comparison = %d\n", timeval_comparison);
+                if (timeval_comparison < 0){
+                    current = NULL;
+                    return NULL;
+                }
+	    }
             pthread_mutex_unlock(&ht->mutex);  // Unlock the mutex
             return current->value;
         }
