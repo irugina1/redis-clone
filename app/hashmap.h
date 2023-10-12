@@ -5,12 +5,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <sys/time.h>
+
 
 #define TABLE_SIZE 100
 
 typedef struct KeyValuePair {
     char key[100];
     char value[100];
+    struct timeval tv;
     struct KeyValuePair *next;
 } KeyValuePair;
 
@@ -21,7 +24,7 @@ typedef struct {
 
 // Function prototypes
 unsigned int hash(const char *key);
-void insert(HashTable *ht, const char *key, const char *value);
+void insert(HashTable *ht, const char *key, const char *value, const int expiry_ms);
 char *get(HashTable *ht, const char *key);
 void initializeHashTable(HashTable *ht);
 void freeHashTable(HashTable *ht);
