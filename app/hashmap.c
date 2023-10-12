@@ -24,7 +24,7 @@ void add_time_offset(struct timeval *tv, long offset_ms) {
 }
 
 /*
-If the result is -1, tv1 is less than tv2.
+If the result is -1, tv1 is less than tv2. 
 If the result is 1, tv1 is greater than tv2.
 If the result is 0, tv1 is equal to tv2.
 */
