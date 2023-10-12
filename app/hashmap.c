@@ -38,15 +38,17 @@ int timeval_compare(const struct timeval *tv1, const struct timeval *tv2) {
 
 void insert(HashTable *ht, const char *key, const char* value, const int expiry_ms) {
     struct timeval tv;
+    gettimeofday(&tv, NULL);
+    printf("inserting at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
     if (expiry_ms > 0) {
         // get current time and compute timeval tv (in the future) when key expires
-        gettimeofday(&tv, NULL);
         add_time_offset(&tv, expiry_ms);
     }
     else {
         tv.tv_sec = -1;
         tv.tv_usec = 0;
     }
+    printf("will expire at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
 
     pthread_mutex_lock(&ht->mutex);  // Lock the mutex
     unsigned int idx = hash(key);
