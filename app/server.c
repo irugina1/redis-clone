@@ -36,7 +36,9 @@ void *handle_client(void *args){
 		// print_raw(ptr);
 		// printf("\n");
 		resp_object_t * obj = parse_resp(&ptr);
+		printf("parsed request into resp object\n");
                 cmd_object_t * cmd = resp_to_command(obj);
+		printf("parsed resp obj into command\n");
 		free_resp_object(obj);
                 char reply[100];
 		if (cmd->type == CMD_PING) {
@@ -73,6 +75,7 @@ void *handle_client(void *args){
 			printf("replying to client failed: %s\n", strerror(errno));
 			break;
 		}
+		printf("done replying");
 		free_cmd_object(cmd);
 	}
 	close(client_socket);
