@@ -19,5 +19,7 @@ typedef struct cmd_object {
 } cmd_object_t;
 
 cmd_object_t* resp_to_command(resp_object_t* obj);
+void free_cmd_object(cmd_object_t *cmd);
 
 #endif // RESP_TO_COMMAND_H
+

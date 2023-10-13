@@ -37,3 +37,11 @@ cmd_object_t* resp_to_command(resp_object_t* obj ){
 	
 	return cmd;
 }
+
+void free_cmd_object(cmd_object_t *cmd){
+	for (int i=0; i < cmd->num_args; i++){
+		free(cmd->args[i]);
+	}
+	free(cmd->args);
+	free(cmd);
+}
