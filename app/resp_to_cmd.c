@@ -39,6 +39,7 @@ cmd_object_t* resp_to_command(resp_object_t* obj ){
 }
 
 void free_cmd_object(cmd_object_t *cmd){
+	printf("entered free_cmd_object\n");
 	for (int i=0; i < cmd->num_args; i++){
 		free(cmd->args[i]);
 	}
