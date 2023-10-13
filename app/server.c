@@ -65,7 +65,7 @@ void *handle_client(void *args){
 			    sprintf(reply, "+%s", val);
 			}
 			else {
-			    reply = "_\r\n";
+			    reply = "$-1\r\n";
 			}
 		}
 		else{
