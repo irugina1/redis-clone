@@ -39,7 +39,6 @@ int timeval_compare(const struct timeval *tv1, const struct timeval *tv2) {
 void insert(HashTable *ht, const char *key, const char* value, const int expiry_ms) {
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    printf("inserting at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
     if (expiry_ms > 0) {
         // get current time and compute timeval tv (in the future) when key expires
         add_time_offset(&tv, expiry_ms);
@@ -48,7 +47,6 @@ void insert(HashTable *ht, const char *key, const char* value, const int expiry_
         tv.tv_sec = -1;
         tv.tv_usec = 0;
     }
-    printf("will expire at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
 
     pthread_mutex_lock(&ht->mutex);  // Lock the mutex
     unsigned int idx = hash(key);
@@ -87,12 +85,7 @@ char* get(HashTable *ht, const char *key) {
         if (strcmp(current->key, key) == 0) {
             struct timeval expiry_tv = current->tv;
             if (expiry_tv.tv_sec >= 0){ // check if it expired or no
-                // compare expiry with current time
                 int timeval_comparison = timeval_compare(&expiry_tv ,&current_tv);
-                // print the two timestamps
-                printf("expiry time = %ld.%06d\n", expiry_tv.tv_sec, expiry_tv.tv_usec);
-                printf("current time = %ld.%06d\n", current_tv.tv_sec, current_tv.tv_usec);
-                printf("timeval comparison = %d\n", timeval_comparison);
                 if (timeval_comparison < 0){
                     current = NULL;
                     return NULL;
