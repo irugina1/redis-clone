@@ -42,7 +42,9 @@ void free_cmd_object(cmd_object_t *cmd){
 	printf("entered free_cmd_object\n");
 	if (cmd->args){
 		for (int i=0; i < cmd->num_args; i++){
-			free(cmd->args[i]);
+			if (cmd->args[i]){
+				free(cmd->args[i]);
+			}
 		}
 		printf("done freeing cmd args' strings\n");
 		free(cmd->args);
