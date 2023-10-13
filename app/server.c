@@ -35,13 +35,12 @@ void *handle_client(void *args){
 		const char *ptr = buffer;
 		// print_raw(ptr);
 		// printf("\n");
-		// TODO free memory after i'm done with obj below
 		resp_object_t * obj = parse_resp(&ptr);
                 cmd_object_t * cmd = resp_to_command(obj);
 		free_resp_object(obj);
-                char *reply = (char *)malloc(100 * sizeof(char));
+                char reply[100];
 		if (cmd->type == CMD_PING) {
-			reply = "+PONG\r\n";
+			strcpy(reply, "+PONG\r\n");
 
 		}
 		if (cmd->type == CMD_ECHO) {
@@ -52,11 +51,11 @@ void *handle_client(void *args){
 		if (cmd->type == CMD_SET) {
 			if (cmd->num_args==3){
 				insert(ht, cmd->args[1], cmd->args[2], -1);
-				reply = "+OK\r\n";
+				strcpy(reply, "+OK\r\n");
 			}
 			if (cmd->num_args==5){
 				insert(ht, cmd->args[1], cmd->args[2], atoi(cmd->args[4]));
-				reply = "+OK\r\n";
+				strcpy(reply, "+OK\r\n");
 			}
 		}
 		if (cmd->type == CMD_GET) {
@@ -65,7 +64,7 @@ void *handle_client(void *args){
 			    sprintf(reply, "+%s\r\n", val);
 			}
 			else {
-			    reply = "$-1\r\n";
+			    strcpy(reply, "$-1\r\n");
 			}
 		}
 		else{
@@ -74,7 +73,6 @@ void *handle_client(void *args){
 			printf("replying to client failed: %s\n", strerror(errno));
 			break;
 		}
-		free(reply);
 	}
 	close(client_socket);
 	free(args);
