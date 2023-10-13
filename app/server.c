@@ -58,11 +58,11 @@ void *handle_client(void *args){
 		if (cmd->type == CMD_SET) {
 			if (cmd->num_args==3){
 				insert(ht, cmd->args[1], cmd->args[2], -1);
-				reply = "+OK";
+				reply = "+OK\n";
 			}
 			if (cmd->num_args==5){
 				insert(ht, cmd->args[1], cmd->args[2], atoi(cmd->args[4]));
-				reply = "+OK";
+				reply = "+OK\n";
 			}
 		}
 		if (cmd->type == CMD_GET) {
