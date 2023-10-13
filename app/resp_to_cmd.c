@@ -19,9 +19,9 @@ cmd_object_t* resp_to_command(resp_object_t* obj ){
 	}
 	else if (strcmp(cmd_name, "get") == 0) {
 		cmd->type = CMD_GET;
-		cmd->args = NULL;
 	}
 	else{
+		cmd->args = NULL;
 		cmd->type = CMD_PING;
 		return cmd;
 	}
