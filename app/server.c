@@ -26,22 +26,16 @@ void *handle_client(void *args){
 	char buffer[1024];
 	while(1){
 		// get request from client
-                struct timeval tv;
 		ssize_t bytes_received = recv(client_socket, buffer, sizeof(buffer), 0);
 		if (bytes_received <= 0) {
 			// printf("client disconnected: %s\n", strerror(errno));
 			break;
 		}
-                gettimeofday(&tv, NULL);
-                printf("finished recv at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
-		// printf("\nreceived %zu bytes\n", bytes_received);
 		buffer[bytes_received] = '\0'; // null-terminate
 		const char *ptr = buffer;
 		// print_raw(ptr);
 		// printf("\n");
 		// TODO free memory after i'm done with obj below
-                gettimeofday(&tv, NULL);
-                printf("start processing new request at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
 		resp_object_t * obj = parse_resp(&ptr);
                 cmd_object_t * cmd = resp_to_command(obj);
                 char *reply = (char *)malloc(100 * sizeof(char));
@@ -71,15 +65,10 @@ void *handle_client(void *args){
 		}
 		else{
 		}
-                gettimeofday(&tv, NULL);
-                printf("start send at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
 		if (send(client_socket, reply, strlen(reply), 0) == -1){
 			printf("replying to client failed: %s\n", strerror(errno));
 			break;
 		}
-                gettimeofday(&tv, NULL);
-                printf("finish send at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
-		printf("handled command\n");
 	}
 	close(client_socket);
 	free(args);
@@ -138,9 +127,6 @@ int main() {
 	while (1){
 		client_data_t *client_data = malloc(sizeof(client_data_t));
 		client_data->client_socket = accept(server_fd, (struct sockaddr *) &client_addr, &client_addr_len);
-                struct timeval tv;
-                gettimeofday(&tv, NULL);
-                printf("accepted new request at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
 		if (client_data->client_socket == -1) {
 			printf("accept failed: %s\n", strerror(errno));
 			free(client_data);
