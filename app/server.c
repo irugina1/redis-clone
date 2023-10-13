@@ -45,24 +45,23 @@ void *handle_client(void *args){
 		}
 		if (cmd->type == CMD_ECHO) {
 			char* echo_message = cmd->args[1];
-			reply = malloc(strlen(echo_message) + 2);
-			sprintf(reply, "+%s\n", echo_message);
+			sprintf(reply, "+%s\r\n", echo_message);
 
 		}
 		if (cmd->type == CMD_SET) {
 			if (cmd->num_args==3){
 				insert(ht, cmd->args[1], cmd->args[2], -1);
-				reply = "+OK\n";
+				reply = "+OK\r\n";
 			}
 			if (cmd->num_args==5){
 				insert(ht, cmd->args[1], cmd->args[2], atoi(cmd->args[4]));
-				reply = "+OK\n";
+				reply = "+OK\r\n";
 			}
 		}
 		if (cmd->type == CMD_GET) {
 			char* val = get(ht, cmd->args[1]);
 			if (val) {
-			    sprintf(reply, "+%s\n", val);
+			    sprintf(reply, "+%s\r\n", val);
 			}
 			else {
 			    reply = "$-1\r\n";
