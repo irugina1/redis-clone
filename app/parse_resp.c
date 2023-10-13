@@ -43,7 +43,9 @@ static resp_object_t* parse_resp_integer(const char **input){
 	char *end = strstr(*input, "\r\n");
 	resp_object_t *obj = malloc(sizeof(resp_object_t));
 	obj->type = RESP_INTEGER;
-	obj->value.integer = atoi(strndup(*input, end-*input));
+	char *int_val_as_string = strndup(*input, end-*input);
+	obj->value.integer = atoi(int_val_as_string);
+	free(int_val_as_string);
 	*input = end + 2;
 	//printf("done parsing integer %d\n", obj->value.integer);
 	return obj;
@@ -58,7 +60,9 @@ static resp_object_t* parse_resp_bulk_string(const char **input){
 	obj->type = RESP_BULK_STRING;
 	// number of chars in bulk string
 	char *end_len = strstr(*input, "\r\n");
-	int len = atoi(strndup(*input, end_len-*input));
+	char *len_as_string = strndup(*input, end_len-*input);
+	int len = atoi(len_as_string);
+	free(len_as_string);
 	*input = end_len + 2;
 	// create bulk string
 	obj->value.string = strndup(*input, len);
@@ -77,7 +81,9 @@ static resp_object_t* parse_resp_array(const char **input){
 	obj->type = RESP_ARRAY;
 	// number of elems in array
 	char *end_count = strstr(*input, "\r\n");
-	int count = atoi(strndup(*input, end_count-*input));
+	char *count_as_string = strndup(*input, end_count-*input);
+	int count = atoi(count_as_string);
+	free(count_as_string);
 	obj->value.array.len = count;
 	*input = end_count + 2;
 	// create array itself
