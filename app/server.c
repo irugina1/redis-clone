@@ -61,7 +61,12 @@ void *handle_client(void *args){
 		}
 		if (cmd->type == CMD_GET) {
 			char* val = get(ht, cmd->args[1]);
-			sprintf(reply, "+%s", val);
+			if (val) {
+			    sprintf(reply, "+%s", val);
+			}
+			else {
+			    reply = "_\r\n";
+			}
 		}
 		else{
 		}
