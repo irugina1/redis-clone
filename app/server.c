@@ -37,6 +37,7 @@ void *handle_client(void *args){
 		// printf("\n");
 		// TODO free memory after i'm done with obj below
 		resp_object_t * obj = parse_resp(&ptr);
+		free_resp_object(obj);
                 cmd_object_t * cmd = resp_to_command(obj);
                 char *reply = (char *)malloc(100 * sizeof(char));
 		if (cmd->type == CMD_PING) {

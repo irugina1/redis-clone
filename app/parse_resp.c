@@ -113,6 +113,36 @@ resp_object_t* parse_resp(const char **input){
 	}
 }
 
+void free_resp_object(resp_object_t *object) {
+    if (object == NULL) {
+        return; // Handle the case of a NULL pointer
+    }
+
+    switch (object->type) {
+        case RESP_INTEGER:
+            // No dynamically allocated memory to free for integers
+            break;
+        case RESP_STRING:
+            // Free the dynamically allocated string
+            free(object->value.string);
+            break;
+        case RESP_ARRAY:
+            // Free the elements in the array recursively
+            for (size_t i = 0; i < object->value.array.len; i++) {
+                free_resp_object(object->value.array.elements[i]);
+            }
+            // Free the array itself
+            free(object->value.array.elements);
+            break;
+        default:
+            // Handle any other types or errors here
+            break;
+    }
+
+    // Finally, free the object itself
+    free(object);
+}
+
 /*
 int main(){
 	// test string

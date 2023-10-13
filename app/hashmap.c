@@ -88,6 +88,7 @@ char* get(HashTable *ht, const char *key) {
                 int timeval_comparison = timeval_compare(&expiry_tv ,&current_tv);
                 if (timeval_comparison < 0){
                     pthread_mutex_unlock(&ht->mutex);  // Unlock the mutex
+	            free(current);
                     current = NULL;
                     return NULL;
                 }

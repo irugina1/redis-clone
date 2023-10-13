@@ -28,5 +28,6 @@ typedef struct resp_object {
 
 resp_object_t* parse_resp(const char **input);
 void print_raw(const char *s);
+void free_resp_object(resp_object_t *object); 
 
 #endif // RESP_PARSER_H
