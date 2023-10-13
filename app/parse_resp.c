@@ -119,10 +119,14 @@ void free_resp_object(resp_object_t *object) {
     }
 
     switch (object->type) {
+        case RESP_STRING:
+            // Free the dynamically allocated string
+            free(object->value.string);
+            break;
         case RESP_INTEGER:
             // No dynamically allocated memory to free for integers
             break;
-        case RESP_STRING:
+        case RESP_BULK_STRING:
             // Free the dynamically allocated string
             free(object->value.string);
             break;
