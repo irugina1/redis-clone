@@ -73,8 +73,10 @@ void *handle_client(void *args){
 			printf("replying to client failed: %s\n", strerror(errno));
 			break;
 		}
+		free(cmd->args);
 	}
 	close(client_socket);
+
 	free(args);
 	return NULL;
 }
