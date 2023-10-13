@@ -87,6 +87,7 @@ char* get(HashTable *ht, const char *key) {
             if (expiry_tv.tv_sec >= 0){ // check if it expired or no
                 int timeval_comparison = timeval_compare(&expiry_tv ,&current_tv);
                 if (timeval_comparison < 0){
+                    pthread_mutex_unlock(&ht->mutex);  // Unlock the mutex
                     current = NULL;
                     return NULL;
                 }

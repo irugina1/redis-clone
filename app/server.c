@@ -46,7 +46,7 @@ void *handle_client(void *args){
 		if (cmd->type == CMD_ECHO) {
 			char* echo_message = cmd->args[1];
 			reply = malloc(strlen(echo_message) + 2);
-			sprintf(reply, "+%s", echo_message);
+			sprintf(reply, "+%s\n", echo_message);
 
 		}
 		if (cmd->type == CMD_SET) {
@@ -62,7 +62,7 @@ void *handle_client(void *args){
 		if (cmd->type == CMD_GET) {
 			char* val = get(ht, cmd->args[1]);
 			if (val) {
-			    sprintf(reply, "+%s", val);
+			    sprintf(reply, "+%s\n", val);
 			}
 			else {
 			    reply = "$-1\r\n";
