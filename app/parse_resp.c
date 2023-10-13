@@ -46,6 +46,7 @@ static resp_object_t* parse_resp_integer(const char **input){
 	char *int_val_as_string = strndup(*input, end-*input);
 	obj->value.integer = atoi(int_val_as_string);
 	free(int_val_as_string);
+	int_val_as_string = NULL;
 	*input = end + 2;
 	//printf("done parsing integer %d\n", obj->value.integer);
 	return obj;
@@ -63,6 +64,7 @@ static resp_object_t* parse_resp_bulk_string(const char **input){
 	char *len_as_string = strndup(*input, end_len-*input);
 	int len = atoi(len_as_string);
 	free(len_as_string);
+	len_as_string = NULL;
 	*input = end_len + 2;
 	// create bulk string
 	obj->value.string = strndup(*input, len);
@@ -84,6 +86,7 @@ static resp_object_t* parse_resp_array(const char **input){
 	char *count_as_string = strndup(*input, end_count-*input);
 	int count = atoi(count_as_string);
 	free(count_as_string);
+	count_as_string = NULL;
 	obj->value.array.len = count;
 	*input = end_count + 2;
 	// create array itself
@@ -128,6 +131,7 @@ void free_resp_object(resp_object_t *object) {
         case RESP_STRING:
             // Free the dynamically allocated string
             free(object->value.string);
+	    object->value.string = NULL;
             break;
         case RESP_INTEGER:
             // No dynamically allocated memory to free for integers
@@ -135,14 +139,17 @@ void free_resp_object(resp_object_t *object) {
         case RESP_BULK_STRING:
             // Free the dynamically allocated string
             free(object->value.string);
+	    object->value.string = NULL;
             break;
         case RESP_ARRAY:
             // Free the elements in the array recursively
             for (size_t i = 0; i < object->value.array.len; i++) {
                 free_resp_object(object->value.array.elements[i]);
+		object->value.array.elements[i] = NULL;
             }
             // Free the array itself
             free(object->value.array.elements);
+	    object->value.array.elements = NULL;
             break;
         default:
             // Handle any other types or errors here
@@ -151,6 +158,7 @@ void free_resp_object(resp_object_t *object) {
 
     // Finally, free the object itself
     free(object);
+    object = NULL;
 }
 
 /*

@@ -44,9 +44,12 @@ void free_cmd_object(cmd_object_t *cmd){
 		for (int i=0; i < cmd->num_args; i++){
 			if (cmd->args[i]){
 				free(cmd->args[i]);
+				cmd->args[i]=NULL;
 			}
 		}
 		free(cmd->args);
+		cmd->args=NULL;
 	}
 	free(cmd);
+	cmd = NULL;
 }

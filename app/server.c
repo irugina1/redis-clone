@@ -78,6 +78,7 @@ void *handle_client(void *args){
 	close(client_socket);
 
 	free(args);
+	args = NULL;
 	return NULL;
 }
 

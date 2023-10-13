@@ -64,6 +64,7 @@ void insert(HashTable *ht, const char *key, const char* value, const int expiry_
             if (strcmp(current->key, key) == 0) {
                 strcpy(current->value, value);
                 free(new_kv);
+		new_kv = NULL;
                 pthread_mutex_unlock(&ht->mutex);  // Unlock the mutex
                 return;
             }
