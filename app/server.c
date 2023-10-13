@@ -71,10 +71,14 @@ void *handle_client(void *args){
 		}
 		else{
 		}
+                gettimeofday(&tv, NULL);
+                printf("start send at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
 		if (send(client_socket, reply, strlen(reply), 0) == -1){
 			printf("replying to client failed: %s\n", strerror(errno));
 			break;
 		}
+                gettimeofday(&tv, NULL);
+                printf("finish send at = %ld.%06d\n", tv.tv_sec, tv.tv_usec);
 		printf("handled command\n");
 	}
 	close(client_socket);
