@@ -78,6 +78,7 @@ void *handle_client(void *args){
 		}
 		printf("done replying\n");
 		free_cmd_object(cmd);
+		printf("done freeing object\n");
 	}
 	close(client_socket);
 
